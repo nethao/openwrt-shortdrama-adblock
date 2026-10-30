@@ -1,0 +1,43 @@
+# ==============================================================================
+# OpenClash 自定义 Sniffer 配置 (/etc/openclash/custom/openclash_custom_sniffer.yaml)
+# 核心作用：force-domain 中加入 "+.*" 强制所有 TLS/HTTP 连接以真实握手的 SNI/Host 匹配规则，
+# 彻底解决字节跳动共享 CDN IP 在 redir-host 模式下被正常域名缓存污染导致的广告漏网问题。
+# ==============================================================================
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: false
+  sniff:
+    QUIC:
+      ports:
+        - 443
+    TLS:
+      ports:
+        - 443
+        - 8443
+    HTTP:
+      ports:
+        - 80
+        - 8080-8880
+      override-destination: false
+  force-domain:
+    - "+.*"
+    - "+.zijieapi.com"
+    - "+.fqnovel.com"
+    - "+.snssdk.com"
+    - "+.qznovelvod.com"
+    - "+.douyin.com"
+    - "+.amemv.com"
+    - "+.douyinvod.com"
+    - "+.idouyinvod.com"
+    - "+.byteimg.com"
+    - "+.bytegecko.com"
+    - "+.ecombdapi.com"
+    - "+.ecombdimg.com"
+  skip-domain:
+    - "Mijia Cloud"
+    - "dlg.io.mi.com"
+    - "+.oray.com"
+    - "+.sunlogin.net"
+    - "+.push.apple.com"

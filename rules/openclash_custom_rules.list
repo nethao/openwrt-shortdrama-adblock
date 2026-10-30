@@ -1,0 +1,54 @@
+# ==============================================================================
+# OpenClash 自定义规则 (放入 /etc/openclash/custom/openclash_custom_rules.list)
+# 适用：红果免费短剧 / 抖音短剧 / 番茄免费小说 精准去广告
+# ==============================================================================
+
+# 1. 阻断 QUIC (UDP 443) 与字节跳动私有长连接广告推送端口
+- AND,((NETWORK,udp),(DST-PORT,443)),REJECT
+- DST-PORT,8658,REJECT
+- DST-PORT,8900,REJECT
+- DST-PORT,9681,REJECT
+
+# 2. 阻断内置 HTTPDNS、无 SNI 加密私有通道与 IPv6 HTTPDNS
+- DOMAIN-REGEX,^tnc[0-9]*-.*\.(zijieapi|snssdk|toutiaoapi|bytedance|amemv)\.com(\..*)?$,REJECT
+- DOMAIN-REGEX,^([a-z0-9.-]+\.)?dig\.bdurl\.net(\..*)?$,REJECT
+- DOMAIN-SUFFIX,httpdns.volcengineapi.com,REJECT
+- IP-CIDR,101.36.166.0/24,REJECT,no-resolve
+- IP-CIDR,113.142.25.50/32,REJECT,no-resolve
+- IP-CIDR,8.134.241.67/32,REJECT,no-resolve
+- IP-CIDR6,240e:978:d04:2002::/64,REJECT,no-resolve
+
+# 3. 拦截红果短剧 / 抖音短剧 / 番茄小说核心广告下发与激励变现接口
+- DOMAIN-REGEX,^ads[0-9]*-normal.*\.(zijieapi|snssdk|fqnovel|amemv)\.com(\..*)?$,REJECT
+- DOMAIN-REGEX,^polaris[0-9]*-.*\.(zijieapi|snssdk|fqnovel|amemv)\.com(\..*)?$,REJECT
+- DOMAIN-REGEX,^([a-z0-9.-]+\.)?(pglstatp-toutiao|pangolin-sdk-toutiao|pangolin-sdk-toutiao-b|pangolin|pangle|ctobsnssdk|bytedance-ads|bytead)\.(com|cn|net)(\..*)?$,REJECT
+- DOMAIN-REGEX,^.*(pangolin|pglstatp|bytead|ad-sign|ads-normal).*\.com(\..*)?$,REJECT
+
+# 4. 拦截抖音短剧小游戏试玩广告 (Ohayoo / mgsdk) 与买量热更新资源包
+- DOMAIN-SUFFIX,dailygn.com,REJECT
+- DOMAIN-KEYWORD,mgsdk,REJECT
+- DOMAIN-SUFFIX,hbttl.cn,REJECT
+- DOMAIN-KEYWORD,down-update,REJECT
+- DOMAIN-KEYWORD,leads-fe,REJECT
+- DOMAIN-SUFFIX,ecomuser.snssdk.com,REJECT
+- DOMAIN-SUFFIX,byteurl.cn,REJECT
+- DOMAIN-REGEX,^klink[0-9]*-.*\.(amemv|zijieapi|snssdk|fqnovel)\.com(\..*)?$,REJECT
+
+# 5. 拦截短剧内嵌第三方买量落地页、微短剧推广与外链 APK 源
+- DOMAIN-SUFFIX,quminglemei.com,REJECT
+- DOMAIN-SUFFIX,daztoutiao.cn,REJECT
+- DOMAIN-SUFFIX,zttapk.bscgslb.com,REJECT
+- DOMAIN-SUFFIX,yingt.fun,REJECT
+- DOMAIN-SUFFIX,qiezibenpao.com,REJECT
+- DOMAIN-SUFFIX,tianwenca.com,REJECT
+- DOMAIN-SUFFIX,app-analytics-services.com,REJECT
+
+# 6. 拦截广告曝光计费回传、应用日志与性能遥测上报
+- DOMAIN-REGEX,^(rt)?log[0-9]*-.*\.(amemv|zijieapi|snssdk|fqnovel|bytedance)\.com(\..*)?$,REJECT
+- DOMAIN-REGEX,^logbk\.(amemv|zijieapi|snssdk|fqnovel)\.com(\..*)?$,REJECT
+- DOMAIN-REGEX,^.*mon.*\.(zijieapi|snssdk|fqnovel|amemv)\.com(\..*)?$,REJECT
+- DOMAIN-REGEX,^saveu[0-9]*-.*\.(amemv|zijieapi|snssdk|fqnovel)\.com(\..*)?$,REJECT
+- DOMAIN-KEYWORD,aweme-saveu,REJECT
+- DOMAIN-SUFFIX,toutiaocloud.com,REJECT
+- DOMAIN-SUFFIX,toutiaocloud.net,REJECT
+- DOMAIN-SUFFIX,live-player-log-service.bytedance.com,REJECT
